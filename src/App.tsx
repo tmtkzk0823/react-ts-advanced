@@ -1,10 +1,35 @@
+import axios from "axios";
+import { useState } from "react";
+import { Todo } from "./Todo";
 import "./styles.css";
 
+type TodoType = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
 export default function App() {
+  const [todos, setTodos] = useState<Array<TodoType>>([]);
+  const onClickFetchData = () => {
+    axios
+      .get<Array<TodoType>>("https://jsonplaceholder.typicode.com/todos")
+      .then((result) => {
+        setTodos(result.data);
+      });
+  };
+
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+      <button onClick={onClickFetchData}>データ取得</button>
+      {todos.map((todo) => (
+        <Todo
+          title={todo.title}
+          userId={todo.userId}
+          completed={todo.completed}
+        />
+      ))}
     </div>
   );
 }
